@@ -12,4 +12,3 @@ class ContactAdmin(admin.ModelAdmin):
 
 admin.site.register(Category)
 admin.site.register(Contact, ContactAdmin)
-
