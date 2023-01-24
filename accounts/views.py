@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from django.core.validators import validate_email
 from django.shortcuts import redirect
 from django.shortcuts import render
+from .models import ContactForm
 
 
 def login(request):
@@ -83,4 +84,17 @@ def register(request):
 
 @login_required(redirect_field_name='login')
 def dashboard(request):
-    return render(request, r'accounts\dashboard.html')
+    if request.method != 'POST':
+        form = ContactForm()
+        return render(request, r'accounts\dashboard.html', {'form': form})
+
+    form = ContactForm(request.POST, request.FILES)
+
+    if not form.is_valid():
+        messages.error(request, 'An error occurred while trying to send the form!')
+        form = ContactForm(request.POST)
+        return render(request, r'accounts\dashboard.html', {'form': form})
+
+    form.save()
+    messages.success(request, f'Contact {request.POST.get("name")} {request.POST.get("last_name")} created!')
+    return redirect('dashboard')
