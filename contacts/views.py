@@ -1,11 +1,13 @@
 from django.http import Http404
-from django.shortcuts import render
 from django.shortcuts import get_object_or_404
+from django.shortcuts import redirect
+from django.shortcuts import render
 from django.core.paginator import Paginator
 from .models import Contact
 from django.db.models import Q
 from django.db.models import Value
 from django.db.models.functions import Concat
+from django.contrib import messages
 
 
 def index(request):
@@ -33,7 +35,8 @@ def profile(request, contact_id):
 def search(request):
     keyword = request.GET.get('keyword')
     if not keyword:
-        raise Http404()
+        messages.add_message(request, messages.ERROR, 'Search field cannot be empty!')
+        return redirect('index')
     title_keyword = keyword.title()
     fields = Concat('name', Value(' '), 'last_name')  # value simulate a field in db
     contacts = Contact.objects.annotate(
