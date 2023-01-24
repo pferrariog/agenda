@@ -1,4 +1,6 @@
+from django.contrib import auth
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.validators import validate_email
 from django.shortcuts import redirect
@@ -6,19 +8,34 @@ from django.shortcuts import render
 
 
 def login(request):
-    return render(request, r'accounts\login.html')
+    if request.method != 'POST':
+        return render(request, r'accounts\login.html')
+
+    username = request.POST.get('username')
+    password = request.POST.get('password')
+
+    user = auth.authenticate(request, username=username, password=password)
+
+    if not user:
+        messages.error(request, 'Wrong username or password!')
+        return render(request, r'accounts\login.html')
+
+    auth.login(request, user)
+    messages.success(request, 'Sucessfully logged in!')
+    return redirect('dashboard')
 
 
 def logout(request):
-    return render(request, r'accounts\logout.html')
+    auth.logout(request)
+    return redirect('login')
 
 
 def register(request):
     if request.method != 'POST':
         return render(request, r'accounts\register.html')
 
-    name = request.POST.get('name')
-    last_name = request.POST.get('last_name')
+    name = request.POST.get('name').title()
+    last_name = request.POST.get('last_name').title()
     email = request.POST.get('email')
     username = request.POST.get('username')
     password = request.POST.get('password')
@@ -64,5 +81,6 @@ def register(request):
     return redirect('login')
 
 
+@login_required(redirect_field_name='login')
 def dashboard(request):
     return render(request, r'accounts\dashboard.html')
