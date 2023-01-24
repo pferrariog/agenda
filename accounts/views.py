@@ -6,6 +6,7 @@ from django.core.validators import validate_email
 from django.shortcuts import redirect
 from django.shortcuts import render
 from .models import ContactForm
+from yaml import safe_load
 
 
 def login(request):
@@ -43,6 +44,12 @@ def register(request):
     password_valid = request.POST.get('password_valid')
 
     fields = [name, last_name, email, username, password, password_valid]
+
+    with open(r'.\users.yaml') as user_file:
+        allowed_users = safe_load(user_file)
+        if email not in allowed_users['allowed_users']:
+            messages.error(request, 'User creation with this e-mail is not allowed!')
+            return render(request, r'accounts\register.html')
 
     if any(not field for field in fields):
         messages.error(request, 'Fields cannot be empty!')

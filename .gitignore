@@ -8,3 +8,4 @@ media
 *.log
 *.pot
 *.pyc
+users.yaml
