@@ -8,6 +8,7 @@ from django.db.models import Q
 from django.db.models import Value
 from django.db.models.functions import Concat
 from django.contrib import messages
+from pathlib import Path
 
 
 def index(request):
@@ -18,7 +19,7 @@ def index(request):
 
     page = request.GET.get('page')
     contacts_per_page = paginator.get_page(page)
-    return render(request, r'contacts\index.html', {
+    return render(request, Path('contacts/index.html'), {
         "contacts": contacts_per_page
     })
 
@@ -27,7 +28,7 @@ def profile(request, contact_id):
     contact = get_object_or_404(Contact, id=contact_id)
     if not contact.show:
         raise Http404
-    return render(request, r'contacts\profile.html', {
+    return render(request, Path('contacts/profile.html'), {
         "contact": contact
     })
 
@@ -47,7 +48,7 @@ def search(request):
     paginator = Paginator(contacts, 3)
     page = request.GET.get('page')
     contacts_per_page = paginator.get_page(page)
-    return render(request, r'contacts\index.html', {
+    return render(request, Path('contacts/index.html'), {
         "contacts": contacts_per_page
     })
 
