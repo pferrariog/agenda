@@ -61,7 +61,7 @@ def register(request):
         messages.error(request, 'Invalid email!')
         return render(request, register_path)
 
-    with open(r'.\users.yaml') as user_file:
+    with open(Path('users.yaml')) as user_file:
         allowed_users = safe_load(user_file)
         if email not in allowed_users['allowed_users']:
             messages.error(request, 'User creation with this e-mail is not allowed!')

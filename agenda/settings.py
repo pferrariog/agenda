@@ -24,9 +24,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-0e%tla(zl3@xqw8at#vp=aadioriz5df0j5^jn&*)zd*1_yehm'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['contactbook.pedrohferrari.com']
 
 
 # Application definition
@@ -78,8 +78,12 @@ WSGI_APPLICATION = 'agenda.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'contactbook',
+        'USER': 'pdrferrari08',
+        'PASSWORD': 'Minh0c@789508',
+        'HOST': '127.0.0.1',
+        'PORT': '3306',
     }
 }
 
@@ -140,3 +144,13 @@ MESSAGE_TAGS = {
     constants.WARNING: 'alert-warning',
     constants.SUCCESS: 'alert-success'
 }
+
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_SSL_REDIRECT = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+
+try:
+    from .local_settings import *
+except:
+    pass
